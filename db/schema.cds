@@ -1,7 +1,6 @@
 namespace idmx;
-
 entity material {
-    Sno                       : Integer64;
+    Sno                       : Int64  ;
     Material                  : String(50);
     MaterialType              : String(50);
     IndustrySector            : String(50);
