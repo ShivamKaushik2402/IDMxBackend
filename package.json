@@ -20,7 +20,8 @@
   },
   "cds": {
     "requires": {
-      "db": "hana-cloud"
+      "db": "hana-cloud",
+      "auth":"dummy"
     },
     "hana": {
       "deploy-format": "hdbtable"
