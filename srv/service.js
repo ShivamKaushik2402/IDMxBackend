@@ -1,10 +1,12 @@
 const cds = require("@sap/cds");
+const xlsx =require("xlsx");
+const bodyParser =require("body-parser");
 class services extends cds.ApplicationService {
     async init() {
         const db = await cds.connect.to("db");
         console.log(db)
 
-        const { material,customer } = cds.entities("idmx");
+        const { material, customer } = cds.entities("idmx");
 
         this.on("READ", "IndustrySector", async (req) => {
             console.log("test1")
@@ -118,6 +120,15 @@ class services extends cds.ApplicationService {
 
             let results = await SELECT.from(customer);
             return results;
+        });
+        this.on("ExcelUpload", async (req) => {
+            let {data}=req.data;
+            let y = xlsx.read(data, { type: 'string' })
+           var materialSheetJson = xlsx.utils.sheet_to_json(y)
+        //     res.send(materialSheetJson)
+        let approvedata = JSON.parse(data);
+        console.log(approvedata);
+
         });
 
         await super.init();

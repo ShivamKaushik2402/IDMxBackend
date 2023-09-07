@@ -9,8 +9,10 @@
     "@sap/cds": "^7.2.0",
     "@sap/hana-client": "^2.17.22",
     "@sap/xssec": "^3.3.4",
+    "body-parser": "^1.20.2",
     "express": "^4",
-    "passport": "^0.6.0"
+    "passport": "^0.6.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1"
@@ -21,7 +23,7 @@
   "cds": {
     "requires": {
       "db": "hana-cloud",
-      "auth":"dummy"
+      "auth": "dummy"
     },
     "hana": {
       "deploy-format": "hdbtable"
