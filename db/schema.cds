@@ -10,9 +10,9 @@ entity material {
     WeightUnit                : String(50);
     Plant                     : String(50);
     StorageLocation           : String(100);
-    PurchasingGroup           : String(100);
-    BatchManagement           : Boolean;
-    AutomaticPO               : Boolean;
+    PurchasingGroup           : Boolean;
+    BatchManagement           : Boolean;//change it to boolean same as below change just for
+    AutomaticPO               : String(100);
     GRProcessingTime          : Time;
     valuationClass            : String(50);
     PriceControl              : String(50);

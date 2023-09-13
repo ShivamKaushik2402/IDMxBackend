@@ -1,10 +1,14 @@
 const cds = require("@sap/cds");
-const xlsx =require("xlsx");
-const bodyParser =require("body-parser");
+const xlsx = require("xlsx");
+const bodyParser = require("body-parser");
+const multer = require("multer");
+const express = require("express");
+const fs = require("fs");
+
 class services extends cds.ApplicationService {
     async init() {
         const db = await cds.connect.to("db");
-        console.log(db)
+
 
         const { material, customer } = cds.entities("idmx");
 
@@ -121,13 +125,71 @@ class services extends cds.ApplicationService {
             let results = await SELECT.from(customer);
             return results;
         });
+
         this.on("ExcelUpload", async (req) => {
-            let {data}=req.data;
-            let y = xlsx.read(data, { type: 'string' })
-           var materialSheetJson = xlsx.utils.sheet_to_json(y)
-        //     res.send(materialSheetJson)
-        let approvedata = JSON.parse(data);
-        console.log(approvedata);
+            console.log(req.data);
+            // console.log('data',req.data);
+            let { data } = req.data;
+            let workbook = xlsx.read(data.buffer, { type: 'buffer' });
+            let file1 = workbook.SheetNames[0];
+            let file2 = workbook.Sheets[file1];
+            let materialSheetJson = xlsx.utils.sheet_to_json(file2);
+            console.log(materialSheetJson);
+
+
+        });
+        this.on("READ", "ExcelUploadFolder", async (req) => {
+            console.log("1111111111111111111111111111111");
+            let xlFile = fs.readFileSync("/home/user/projects/idmx/db/data/materialdata.xlsx");
+            let workbook = xlsx.read(xlFile.buffer, { type: 'buffer' });
+            let file1 = workbook.SheetNames[0];
+            let file2 = workbook.Sheets[file1];
+            let approvedata = xlsx.utils.sheet_to_json(file2);
+            console.log(approvedata);
+            for (var i = 0; i < approvedata.length; i++) {
+                await INSERT.into(material)
+                    .columns("Sno",
+                        "Material",
+                        "MaterialType",
+                        "IndustrySector",
+                        "Description",
+                        "BaseUnitOfMeasure",
+                        "MaterialGroup",
+                        "WeightUnit",
+                        "Plant",
+                        "StorageLocation",
+                        "PurchasingGroup",
+                        "BatchManagement",
+                        "AutomaticPO",
+                        "GRProcessingTime",
+                        "valuationClass",
+                        "PriceControl",
+                        "MovingPrice_StandardPrice"
+                    )
+                    .values(
+                        approvedata[i]["Sno"],
+                        approvedata[i]["Material"],
+                        approvedata[i]["MaterialType"],
+                        approvedata[i]["IndustrySector"],
+                        approvedata[i]["Description"],
+                        approvedata[i]["BaseUnitOfMeasure"],
+                        approvedata[i]["MaterialGroup"],
+                        approvedata[i]["WeightUnit"],
+                        approvedata[i]["Plant"],
+                        approvedata[i]["StorageLocation"],
+                        approvedata[i]["PurchasingGroup"],
+                        approvedata[i]["BatchManagement"],
+                        approvedata[i]["AutomaticPO"],
+                        approvedata[i]["GRProcessingTime"],
+                        approvedata[i]["valuationClass"],
+                        approvedata[i]["PriceControl"],
+                        approvedata[i]["MovingPrice_StandardPrice"]
+
+                    );
+            }
+            let results = await SELECT.from(material);
+            return results;
+
 
         });
 
