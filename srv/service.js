@@ -4,6 +4,10 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const express = require("express");
 const fs = require("fs");
+let upload = multer({
+    dest: "/Excel upload app/uploads/",
+    storage: multer.memoryStorage()
+ })
 
 class services extends cds.ApplicationService {
     async init() {
@@ -126,8 +130,9 @@ class services extends cds.ApplicationService {
             return results;
         });
 
-        this.on("ExcelUpload", async (req) => {
-            console.log(req.data);
+        this.on("ExcelUpload",upload.single('data'), async (req) => {
+            // console.log('data',req.data);
+            console.log('file',req.data);
             // console.log('data',req.data);
             let { data } = req.data;
             let workbook = xlsx.read(data.buffer, { type: 'buffer' });
@@ -188,7 +193,7 @@ class services extends cds.ApplicationService {
                     );
             }
             let results = await SELECT.from(material);
-            return results;
+            return {Status : JSON.stringify(results)};
 
 
         });
